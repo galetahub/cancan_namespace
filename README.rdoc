@@ -1,0 +1,46 @@
+= CancanNamespace
+
+Namespace for cancan gem.
+
+== Usage
+
+  class Ability
+    include CanCan::Ability
+
+    attr_accessor :context, :user
+
+    def initialize(user, context = nil)
+      ...
+      
+      if user.admin?
+        can :manage, :all
+        can :manage, :all, :context => :manage
+      end
+    end
+  end
+  
+
+=== Controller
+
+  Manage::BaseController < ApplicationController
+    protected
+    
+      def current_ability
+        @current_ability ||= ::Ability.new(current_user, :manage)
+      end
+  end
+
+  class Manage::PostsController < Manage::BaseController
+    before_filter :find_post, :only => [:edit, :update, :destroy]
+    authorize_resource
+    ...
+  end
+  
+=== View
+
+  <% if can? :edit, post, :context => :manage %>
+    <%= link_to 'Edit', edit_manage_post_path(post) %>
+  <% end %>
+
+
+Copyright (c) 2011 Aimbulance, released under the MIT license
