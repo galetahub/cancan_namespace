@@ -8,10 +8,15 @@ module CanCanNamespace
     end
     
     module ClassMethods
+      def self.extended(base)
+        base.class_eval do
+          alias_method :authorize_resource, :authorize_resource_with_context
+        end
+      end
     end
     
     module InstanceMethods
-      def authorize_resource
+      def authorize_resource_with_context
         unless skip?(:authorize)
           options = { :context => module_from_controller }
           @controller.authorize!(authorization_action, resource_instance || resource_class_with_parent, options)
@@ -21,14 +26,17 @@ module CanCanNamespace
       private
       
         def module_from_controller
-          @params[:controller].sub("Controller", "").underscore.split('/').first.singularize
+          modules = @params[:controller].sub("Controller", "").underscore.split('/')
+          if modules.size > 1
+            modules.first.singularize
+          else
+            return nil
+          end
         end
     end
   end
 end
 
 if defined? CanCan::ControllerResource
-  CanCan::ControllerResource.class_eval do
-    include CanCanNamespace::ControllerResource
-  end
+  CanCan::ControllerResource.send(:include, CanCanNamespace::ControllerResource)
 end

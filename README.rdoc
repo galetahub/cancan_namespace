@@ -5,9 +5,7 @@ Namespace for cancan gem.
 == Usage
 
   class Ability
-    include CanCan::Ability
-
-    attr_accessor :context, :user
+    include CanCanNamespace::Ability
 
     def initialize(user, context = nil)
       ...
