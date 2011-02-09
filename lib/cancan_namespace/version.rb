@@ -2,8 +2,8 @@
 module CancanNamespace
   module Version
     MAJOR = 0
-    MINOR = 0
-    RELEASE = 1
+    MINOR = 1
+    RELEASE = 0
 
     def self.dup
       "#{MAJOR}.#{MINOR}.#{RELEASE}"
