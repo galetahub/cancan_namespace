@@ -8,6 +8,8 @@ Namespace for cancan gem.
     include CanCanNamespace::Ability
 
     def initialize(user, context = nil)
+      @context = context
+      
       ...
       
       if user.admin?

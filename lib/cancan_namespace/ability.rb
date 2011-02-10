@@ -17,9 +17,11 @@ module CanCanNamespace
   #
   module Ability
     include CanCan::Ability
+    
+    attr_accessor :context
 
     def can?(action, subject, *extra_args)
-      context = nil
+      context = @context
       if extra_args.last.kind_of?(Hash) && extra_args.last.has_key?(:context)
         context = extra_args.pop[:context]
       end
@@ -43,6 +45,7 @@ module CanCanNamespace
       # Returns an array of Rule instances which match the action and subject
       # This does not take into consideration any hash conditions or block statements
       def relevant_rules(action, subject, context = nil)
+        context ||= @context
         rules.reverse.select do |rule|
           rule.expanded_actions = expand_actions(rule.actions)
           rule.relevant? action, subject, context
