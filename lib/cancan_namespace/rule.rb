@@ -9,7 +9,11 @@ module CanCanNamespace
     # of conditions and the last one is the block passed to the "can" call.
     def initialize(base_behavior, action, subject, conditions, block)
       super
-      @contexts = @conditions.has_key?(:context) ? [@conditions.delete(:context)].flatten.map(&:to_s) : []
+      @contexts = has_conditions? ? [@conditions.delete(:context)].flatten.map(&:to_s) : []
+    end
+    
+    def has_conditions?
+      !conditions_empty? && @conditions.kind_of?(Hash)
     end
     
     # Matches both the subject and action, not necessarily the conditions
