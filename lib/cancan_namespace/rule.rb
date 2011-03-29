@@ -18,7 +18,7 @@ module CanCanNamespace
     
     # Matches both the subject and action, not necessarily the conditions
     def relevant?(action, subject, context = nil)
-      subject = subject.values.first if subject.kind_of? Hash
+      subject = subject.values.first if subject.class == Hash
       @match_all || (matches_action?(action) && matches_subject?(subject) && matches_context(context))
     end
     

@@ -2,6 +2,10 @@
 
 Namespace for cancan gem.
 
+== Install
+
+  gem 'cancan_namespace'
+
 == Usage
 
   class Ability
