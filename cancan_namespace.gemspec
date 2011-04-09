@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan_namespace}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Igor Galeta", "Pavlo Galeta"]
-  s.date = %q{2011-03-29}
+  s.date = %q{2011-04-09}
   s.description = %q{Add namespace for cancan authorization library}
   s.email = %q{galeta.igor@gmail.com}
   s.extra_rdoc_files = [
