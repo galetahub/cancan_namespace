@@ -8,9 +8,11 @@ module CanCanNamespace
     # and subject respectively (such as :read, @project). The third argument is a hash
     # of conditions and the last one is the block passed to the "can" call.
     def initialize(base_behavior, action, subject, conditions, block)
-      if conditions.kind_of?(Hash)
-        @contexts = conditions.has_key?(:context) ? [conditions.delete(:context)].flatten.map(&:to_s) : []
+      if conditions.kind_of?(Hash) && conditions.has_key?(:context)
+        @contexts = [conditions.delete(:context)].flatten.map(&:to_s)
         conditions = nil if conditions.keys.empty?
+      else
+        @contexts = []
       end
       
       super
