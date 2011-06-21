@@ -34,17 +34,35 @@ Namespace for cancan gem.
       end
   end
 
+In this case context extracted from controller name (:manage):
+
   class Manage::PostsController < Manage::BaseController
     before_filter :find_post, :only => [:edit, :update, :destroy]
     authorize_resource
     ...
   end
-  
+
+Set context for controller directly:
+
+  class People::RelationshipsController < Account::BaseController
+    before_filter :find_followed
+    before_filter :build_relation, :only => [:create]
+    before_filter :find_relationship, :only => [:destroy]
+    
+    authorize_resource :relationship, :context => :account
+    
+    ...
+    
+  end
+
 === View
 
-  <% if can? :edit, post, :context => :manage %>
-    <%= link_to 'Edit', edit_manage_post_path(post) %>
+  <% if can? :edit, post %>
+    <%= link_to 'Edit', edit_post_path(post) %>
   <% end %>
 
+  <% if can? :edit, post, :context => :manage %>
+    <%= link_to 'Edit (admin)', edit_manage_post_path(post) %>
+  <% end %>
 
 Copyright (c) 2011 Aimbulance, released under the MIT license

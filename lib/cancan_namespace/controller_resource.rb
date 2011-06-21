@@ -18,7 +18,7 @@ module CanCanNamespace
     module InstanceMethods
       def authorize_resource_with_context
         unless skip?(:authorize)
-          options = { :context => module_from_controller }
+          options = { :context => (@options[:context] || module_from_controller) }
           @controller.authorize!(authorization_action, resource_instance || resource_class_with_parent, options)
         end
       end
