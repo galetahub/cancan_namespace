@@ -28,7 +28,7 @@ module CanCanNamespace
         def module_from_controller
           modules = @params[:controller].sub("Controller", "").underscore.split('/')
           if modules.size > 1
-            modules.first.singularize
+            modules[0..-2].map(&:singularize).join('__')
           else
             return nil
           end
