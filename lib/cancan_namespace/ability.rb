@@ -45,7 +45,6 @@ module CanCanNamespace
       # Returns an array of Rule instances which match the action and subject
       # This does not take into consideration any hash conditions or block statements
       def relevant_rules(action, subject, context = nil)
-        context ||= @context
         rules.reverse.select do |rule|
           rule.expanded_actions = expand_actions(rule.actions)
           rule.relevant? action, subject, context
