@@ -39,6 +39,15 @@ module CanCanNamespace
     def cannot(action = nil, subject = nil, conditions = nil, &block)
       rules << CanCanNamespace::Rule.new(false, action, subject, conditions, block)
     end
+
+    def model_adapter(model_class, action, context = nil)
+      adapter_class = CanCan::ModelAdapters::AbstractAdapter.adapter_class(model_class)
+      adapter_class.new(model_class, relevant_rules_for_query(action, model_class, context))
+    end
+
+    def has_block?(action, subject, context = nil)
+      relevant_rules(action, subject, context).any?(&:only_block?)
+    end
     
     private
     
@@ -54,7 +63,15 @@ module CanCanNamespace
       def relevant_rules_for_match(action, subject, context = nil)
         relevant_rules(action, subject, context).each do |rule|
           if rule.only_raw_sql?
-            raise Error, "The can? and cannot? call cannot be used with a raw sql 'can' definition. The checking code cannot be determined for #{action.inspect} #{subject.inspect}"
+            raise CanCan::Error, "The can? and cannot? call cannot be used with a raw sql 'can' definition. The checking code cannot be determined for #{action.inspect} #{subject.inspect}"
+          end
+        end
+      end
+
+      def relevant_rules_for_query(action, subject, context = nil)
+        relevant_rules(action, subject, context).each do |rule|
+          if rule.only_block?
+            raise CanCan::Error, "The accessible_by call cannot be used with a block 'can' definition. The SQL cannot be determined for #{action.inspect} #{subject.inspect}, context: #{context.inspect}"
           end
         end
       end

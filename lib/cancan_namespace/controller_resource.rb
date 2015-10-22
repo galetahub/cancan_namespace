@@ -11,6 +11,8 @@ module CanCanNamespace
       def self.extended(base)
         base.class_eval do
           alias_method :authorize_resource, :authorize_resource_with_context
+          alias_method :load_collection?, :load_collection_with_context?
+          alias_method :load_collection, :load_collection_with_context
         end
       end
     end
@@ -21,6 +23,16 @@ module CanCanNamespace
           options = { :context => (@options[:context] || module_from_controller) }
           @controller.authorize!(authorization_action, resource_instance || resource_class_with_parent, options)
         end
+      end
+
+      protected
+
+      def load_collection_with_context?
+        resource_base.respond_to?(:accessible_by) && !current_ability.has_block?(authorization_action, resource_class, @options[:context] || module_from_controller)
+      end
+
+      def load_collection_with_context
+        resource_base.accessible_by(current_ability, authorization_action, @options[:context] || module_from_controller)
       end
       
       private
