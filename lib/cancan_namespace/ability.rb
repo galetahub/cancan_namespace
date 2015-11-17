@@ -18,13 +18,8 @@ module CanCanNamespace
   module Ability
     include CanCan::Ability
     
-    attr_accessor :context
-
     def can?(action, subject, *extra_args)
-      context = @context
-      if extra_args.last.kind_of?(Hash) && extra_args.last.has_key?(:context)
-        context = extra_args.pop[:context]
-      end
+      context = extra_args.pop[:context] if extra_args.last.kind_of?(Hash) && extra_args.last.key?(:context)
       
       match = relevant_rules_for_match(action, subject, context).detect do |rule|
         rule.matches_conditions?(action, subject, extra_args)

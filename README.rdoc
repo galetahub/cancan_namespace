@@ -11,8 +11,7 @@ Namespace for cancan gem.
   class Ability
     include CanCanNamespace::Ability
 
-    def initialize(user, context = nil)
-      @context = context
+    def initialize(user)
       
       ...
       
@@ -26,15 +25,7 @@ Namespace for cancan gem.
 
 === Controller
 
-  Manage::BaseController < ApplicationController
-    protected
-    
-      def current_ability
-        @current_ability ||= ::Ability.new(current_user, :manage)
-      end
-  end
-
-In this case context extracted from controller name (:manage):
+Context is extracted from controller name (:manage):
 
   class Manage::PostsController < Manage::BaseController
     before_filter :find_post, :only => [:edit, :update, :destroy]
@@ -57,12 +48,27 @@ Set context for controller directly:
 
 === View
 
+If no extra context argument is given, it defaults to the namespace where the current controller lives
+
+  # app/views/posts/show.html.erb
+  # controller has no namespace -> context = nil
   <% if can? :edit, post %>
     <%= link_to 'Edit', edit_post_path(post) %>
   <% end %>
 
+When you want to check an ability for another context, specify it manually
+
+  # app/views/posts/show.html.erb
   <% if can? :edit, post, :context => :manage %>
     <%= link_to 'Edit (admin)', edit_manage_post_path(post) %>
+  <% end %>
+
+When the current controller is in a namespace and you want to check an ability for the `nil` context, meaning a controller without namespace, you need to specify `context => nil`
+
+  # app/views/manage/posts/show.html.erb
+  # controller has namespace "manage" -> context is manually overridden to `nil`
+  <% if can? :edit, post, :context => nil %>
+    <%= link_to 'Edit', edit_post_path(post) %>
   <% end %>
 
 Copyright (c) 2011 Aimbulance, released under the MIT license
