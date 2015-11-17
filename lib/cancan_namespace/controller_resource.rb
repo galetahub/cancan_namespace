@@ -20,7 +20,7 @@ module CanCanNamespace
     module InstanceMethods
       def authorize_resource_with_context
         unless skip?(:authorize)
-          options = { :context => (@options[:context] || module_from_controller) }
+          options = { :context => (@options[:context] || @controller.get_context) }
           @controller.authorize!(authorization_action, resource_instance || resource_class_with_parent, options)
         end
       end
@@ -28,23 +28,12 @@ module CanCanNamespace
       protected
 
       def load_collection_with_context?
-        resource_base.respond_to?(:accessible_by) && !current_ability.has_block?(authorization_action, resource_class, @options[:context] || module_from_controller)
+        resource_base.respond_to?(:accessible_by) && !current_ability.has_block?(authorization_action, resource_class, @options[:context] || @controller.get_context)
       end
 
       def load_collection_with_context
-        resource_base.accessible_by(current_ability, authorization_action, @options[:context] || module_from_controller)
+        resource_base.accessible_by(current_ability, authorization_action, @options[:context] || @controller.get_context)
       end
-      
-      private
-      
-        def module_from_controller
-          modules = @params[:controller].sub("Controller", "").underscore.split('/')
-          if modules.size > 1
-            modules[0..-2].map(&:singularize).join('__')
-          else
-            return nil
-          end
-        end
     end
   end
 end
