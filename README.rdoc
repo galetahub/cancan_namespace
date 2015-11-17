@@ -48,21 +48,21 @@ Set context for controller directly:
 
 === View
 
-  If no extra context argument is given, it defaults to the context the current controller is in
+If no extra context argument is given, it defaults to the context the current controller is in
 
   # app/views/posts/show.html.erb
   <% if can? :edit, post %>
     <%= link_to 'Edit', edit_post_path(post) %>
   <% end %>
 
-  When you want to check an ability for another context, specify it manually
+When you want to check an ability for another context, specify it manually
 
   # app/views/posts/show.html.erb
   <% if can? :edit, post, :context => :manage %>
     <%= link_to 'Edit (admin)', edit_manage_post_path(post) %>
   <% end %>
 
-  When the current controller is in a namespace and you want to check an ability for the `nil` context, meaning a controller without namespace, you need to specify `context => nil`
+When the current controller is in a namespace and you want to check an ability for the `nil` context, meaning a controller without namespace, you need to specify `context => nil`
 
   # app/views/manage/posts/show.html.erb
   <% if can? :edit, post, :context => nil %>
