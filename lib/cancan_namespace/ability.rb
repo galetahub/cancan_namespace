@@ -43,6 +43,14 @@ module CanCanNamespace
     def has_block?(action, subject, context = nil)
       relevant_rules(action, subject, context).any?(&:only_block?)
     end
+
+    def attributes_for(action, subject, context = nil)
+      attributes = {}
+      relevant_rules(action, subject, context).each do |rule|
+        attributes.merge!(rule.attributes_from_conditions) if rule.base_behavior
+      end
+      attributes
+    end
     
     private
     
