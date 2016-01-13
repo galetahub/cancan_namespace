@@ -13,6 +13,7 @@ module CanCanNamespace
           alias_method :authorize_resource, :authorize_resource_with_context
           alias_method :load_collection?, :load_collection_with_context?
           alias_method :load_collection, :load_collection_with_context
+          alias_method :initial_attributes, :initial_attributes_with_context
         end
       end
     end
@@ -33,6 +34,12 @@ module CanCanNamespace
 
       def load_collection_with_context
         resource_base.accessible_by(current_ability, authorization_action, @options[:context] || @controller.get_context)
+      end
+
+      def initial_attributes_with_context
+        current_ability.attributes_for(@params[:action].to_sym, resource_class, @options[:context] || @controller.get_context).delete_if do |key, value|
+          resource_params && resource_params.include?(key)
+        end
       end
     end
   end
