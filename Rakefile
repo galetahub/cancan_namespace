@@ -36,7 +36,7 @@ begin
     gemspec.files = FileList["[A-Z]*", "lib/**/*"]
     gemspec.rubyforge_project = "cancan_namespace"
     
-    gemspec.add_dependency('cancan', '>= 1.6.3')
+    gemspec.add_dependency('cancancan', '>= 1.13.1')
   end
   
   Jeweler::GemcutterTasks.new
