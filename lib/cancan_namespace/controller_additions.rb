@@ -9,7 +9,7 @@ module CanCanNamespace
     end
 
     def get_context
-      modules = params[:controller].sub("Controller", "").underscore.split('/')
+      modules = request.path_parameters[:controller].sub("Controller", "").underscore.split('/')
       if modules.size > 1
         modules[0..-2].map(&:singularize).join('__')
       else

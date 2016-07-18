@@ -21,25 +21,28 @@ module CanCanNamespace
     module InstanceMethods
       def authorize_resource_with_context
         unless skip?(:authorize)
-          options = { :context => (@options[:context] || @controller.get_context) }
-          @controller.authorize!(authorization_action, resource_instance || resource_class_with_parent, options)
+          @controller.authorize!(authorization_action, resource_instance || resource_class_with_parent, context: context)
         end
       end
 
       protected
 
       def load_collection_with_context?
-        resource_base.respond_to?(:accessible_by) && !current_ability.has_block?(authorization_action, resource_class, @options[:context] || @controller.get_context)
+        resource_base.respond_to?(:accessible_by) && !current_ability.has_block?(authorization_action, resource_class, context)
       end
 
       def load_collection_with_context
-        resource_base.accessible_by(current_ability, authorization_action, @options[:context] || @controller.get_context)
+        resource_base.accessible_by(current_ability, authorization_action, context)
       end
 
       def initial_attributes_with_context
-        current_ability.attributes_for(@params[:action].to_sym, resource_class, @options[:context] || @controller.get_context).delete_if do |key, value|
+        current_ability.attributes_for(@params[:action].to_sym, resource_class, context).delete_if do |key, value|
           resource_params && resource_params.include?(key)
         end
+      end
+
+      def context
+        @options.fetch(:context, @controller.get_context)
       end
     end
   end
